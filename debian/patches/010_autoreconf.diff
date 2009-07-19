@@ -1,0 +1,60 @@
+Index: allegro4.2-4.2.2/configure
+===================================================================
+--- allegro4.2-4.2.2.orig/configure	2007-09-30 18:49:07.000000000 +0000
++++ allegro4.2-4.2.2/configure	2007-09-30 18:50:47.000000000 +0000
+@@ -3291,7 +3291,7 @@
+ { echo "$as_me:$LINENO: checking whether linker works with -s option" >&5
+ echo $ECHO_N "checking whether linker works with -s option... $ECHO_C" >&6; }
+ allegro_save_LDFLAGS=$LDFLAGS
+-LDFLAGS="-s $LDFLAGS"
++LDFLAGS="$LDFLAGS"
+ if test "${allegro_cv_prog_ld_s+set}" = set; then
+   echo $ECHO_N "(cached) $ECHO_C" >&6
+ else
+@@ -5380,7 +5380,6 @@
+   LIBS="-ldl $LIBS"
+ fi
+ 
+-      LDFLAGS="-Wl,--export-dynamic $LDFLAGS"
+     fi
+ fi
+ 
+@@ -5428,7 +5427,7 @@
+   COMPILE_CXX_PROGRAM=COMPILE_CXX_NORMAL
+   COMPILE_S_PROGRAM=COMPILE_S_NORMAL
+   if test "X$allegro_cv_prog_ld_s" = "Xyes"; then
+-    PROG_LDFLAGS="-s \$(LDFLAGS)"
++    PROG_LDFLAGS="\$(LDFLAGS)"
+   else
+     PROG_LDFLAGS="\$(LDFLAGS)"
+   fi
+@@ -5444,8 +5443,8 @@
+   allegro_static_libraries=yes
+   _programs="statically linked $_programs"
+ else
+-  LIBALLEG="lib/unix/lib${LIB_TO_LINK}-\$(shared_version).so lib/unix/lib${LIB_TO_LINK}_unsharable.a"
+-  LINK_LIBALLEG="-Llib/unix -l${LIB_TO_LINK}-\$(shared_version) -l${LIB_TO_LINK}_unsharable -lm"
++  LIBALLEG="lib/unix/lib${LIB_TO_LINK}-\$(shared_version).so"
++  LINK_LIBALLEG="-Llib/unix -l${LIB_TO_LINK}-\$(shared_version) -lm"
+   LINK_WITH_STATIC_LIBS=no
+   allegro_shared_libraries=yes
+   _programs="dynamically linked $_programs"
+@@ -5483,15 +5482,15 @@
+ 
+   _libraries="$_libraries shared"
+   if test "X$allegro_build_normal_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballeg-\$(shared_version).so lib/unix/liballeg_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballeg-\$(shared_version).so"
+     _libraries="$_libraries release"
+   fi
+   if test "X$allegro_build_debugging_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballd-\$(shared_version).so lib/unix/liballd_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballd-\$(shared_version).so"
+     _libraries="$_libraries debug"
+   fi
+   if test "X$allegro_build_profiling_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballp-\$(shared_version).so lib/unix/liballp_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballp-\$(shared_version).so"
+     _libraries="$_libraries profile"
+   fi
+ fi

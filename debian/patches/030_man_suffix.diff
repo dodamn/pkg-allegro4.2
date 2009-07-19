@@ -1,0 +1,97 @@
+Index: allegro4.2-4.2.2/docs/src/makedoc/makeman.c
+===================================================================
+--- allegro4.2-4.2.2.orig/docs/src/makedoc/makeman.c	2005-09-24 02:30:04.000000000 +0000
++++ allegro4.2-4.2.2/docs/src/makedoc/makeman.c	2007-09-30 18:51:05.000000000 +0000
+@@ -172,7 +172,7 @@
+ 			if (!f2)
+ 			   return 1;
+ 
+-			fprintf(f2, ".so man%s/%s\n", get_extension(filename), get_filename(buf));
++			fprintf(f2, ".so man%1.1s/%s\n", get_extension(filename), get_filename(buf));
+ 			fclose(f2);
+ 		     }
+ 
+Index: allegro4.2-4.2.2/makefile.lst
+===================================================================
+--- allegro4.2-4.2.2.orig/makefile.lst	2005-06-22 17:37:55.000000000 +0000
++++ allegro4.2-4.2.2/makefile.lst	2007-09-30 18:51:05.000000000 +0000
+@@ -637,7 +637,7 @@
+ DISTCLEAN_FILES = \
+ 	docs/texi/*.texi docs/texi/*.txi \
+ 	docs/info/*.info docs/info/*.inf \
+-	docs/man/*.3 \
++	docs/man/*.3alleg \
+ 	docs/build/*.txt docs/txt/*.txt \
+ 	docs/rtf/*.rtf \
+ 	docs/html/*.html docs/html/*.htm docs/html/build/*.html \
+Index: allegro4.2-4.2.2/makefile.in
+===================================================================
+--- allegro4.2-4.2.2.orig/makefile.in	2007-09-30 18:50:18.000000000 +0000
++++ allegro4.2-4.2.2/makefile.in	2007-09-30 18:51:05.000000000 +0000
+@@ -243,7 +243,7 @@
+ DOCS += $(addprefix docs/rtf/,$(addsuffix .rtf,$(DOCBASEFILES)))
+ DOCS += $(addprefix docs/html/,$(addsuffix .html,index $(DOCBASEFILES)))
+ DOCS += $(addprefix docs/html/build/,$(addsuffix .html,$(DOCBUILDFILES)))
+-DOCS += docs/texi/allegro.texi docs/info/allegro.info docs/man/install_allegro.3
++DOCS += docs/texi/allegro.texi docs/info/allegro.info docs/man/install_allegro.3alleg
+ DOCS += CHANGES AUTHORS THANKS readme.txt
+ DOCS += docs/scite/allegro.api
+ 
+@@ -302,8 +302,8 @@
+ $(filter %.api,$(DOCS)): docs/scite/%.api: docs/src/%._tx $(MAKEDOC)
+ 	$(MAKEDOC) -scite $@ $<
+ 
+-docs/man/install_allegro.3: docs/src/allegro._tx $(MAKEDOC)
+-	$(MAKEDOC) -man docs/man/dummyname.3 $<
++docs/man/install_allegro.3alleg: docs/src/allegro._tx $(MAKEDOC)
++	$(MAKEDOC) -man docs/man/dummyname.3alleg $<
+ 
+ AUTHORS: docs/src/thanks._tx $(MAKEDOC)
+ 	$(MAKEDOC) -part -ascii $@ $<
+@@ -558,14 +558,14 @@
+ 
+ install-man: docs
+ 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
+-	@for file in $(srcdir)/docs/man/*.3; do \
++	@for file in $(srcdir)/docs/man/*.3alleg; do \
+ 	  echo Installing $$file to $(DESTDIR)$(mandir)/man3; \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man3/; \
+ 	done
+ 
+ install-gzipped-man: docs
+ 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
+-	@for file in $(srcdir)/docs/man/*.3; do \
++	@for file in $(srcdir)/docs/man/*.3alleg; do \
+ 	  echo Installing $$file.gz to $(DESTDIR)$(mandir)/man3; \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man3/; \
+ 	  gzip -9 -f $(DESTDIR)$(mandir)/man3/`echo $$file | sed -e "s:.*/::"`; \
+@@ -573,7 +573,7 @@
+ 
+ install-bzipped-man: docs
+ 	$(mkinstalldirs) $(DESTDIR)$(mandir)/man3
+-	@for file in $(srcdir)/docs/man/*.3; do \
++	@for file in $(srcdir)/docs/man/*.3alleg; do \
+ 	  echo Installing $$file.bz2 to $(DESTDIR)$(mandir)/man3; \
+ 	  $(INSTALL_DATA) $$file $(DESTDIR)$(mandir)/man3/; \
+ 	  bzip2 -9 -f $(DESTDIR)$(mandir)/man3/`echo $$file | sed -e "s:.*/::"`; \
+@@ -644,15 +644,15 @@
+ 	rm -f $(infodir)/allegro.info
+ 
+ uninstall-man:
+-	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3,p" $(srcdir)/docs/src/allegro._tx \
++	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3alleg,p" $(srcdir)/docs/src/allegro._tx \
+ 	  | xargs -n 1 rm -f
+-	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3.gz,p" $(srcdir)/docs/src/allegro._tx \
++	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3alleg.gz,p" $(srcdir)/docs/src/allegro._tx \
+ 	  | xargs -n 1 rm -f
+-	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3.bz2,p" $(srcdir)/docs/src/allegro._tx \
++	sed -n -e "s,^@[@\\].*@\([a-zA-Z0-9_]*\)[^a-zA-Z0-9_*].*,$(mandir)/man3/\1.3alleg.bz2,p" $(srcdir)/docs/src/allegro._tx \
+ 	  | xargs -n 1 rm -f
+-	sed -n -e "s,^@@Example.*@\(ex.*\),$(mandir)/man3/\1.3,p" $(srcdir)/docs/src/allegro._tx \
++	sed -n -e "s,^@@Example.*@\(ex.*\),$(mandir)/man3/\1.3alleg,p" $(srcdir)/docs/src/allegro._tx \
+ 	  | xargs -n 1 rm -f
+-	sed -n -e "s,^@@\(struct\|typedef\).*@\([a-zA-Z0-9_]*\),$(mandir)/man3/\2.3,p" $(srcdir)/docs/src/allegro._tx \
++	sed -n -e "s,^@@\(struct\|typedef\).*@\([a-zA-Z0-9_]*\),$(mandir)/man3/\2.3alleg,p" $(srcdir)/docs/src/allegro._tx \
+ 	  | xargs -n 1 rm -f
+ 
+ uninstall-misc:

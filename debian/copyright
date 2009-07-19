@@ -1,0 +1,33 @@
+This package was debianized by Sam Hocevar <sam@zoy.org> on
+Sat, 30 Jul 2005 11:25:10 +0200. It was downloaded from
+https://sourceforge.net/project/showfiles.php?group_id=5665
+
+Upstream authors: Shawn Hargreaves (shawn@talula.demon.co.uk) and
+others, see AUTHORS file in the documentation directory.
+
+Copyright 1996-2005 Shawn Hargreaves and the Allegro developers.
+
+The original readme file contains the following text with regard to the
+copyright:
+
+#include <std_disclaimer.h>
+
+   "I do not accept responsibility for any effects, adverse or otherwise, 
+    that this code may have on you, your computer, your sanity, your dog, 
+    and anything else that you can think of. Use it at your own risk."
+
+===================================
+============ Copyright ============
+===================================
+
+   Allegro is gift-ware. It was created by a number of people working in 
+   cooperation, and is given to you freely as a gift. You may use, modify, 
+   redistribute, and generally hack it about in any way you like, and you do 
+   not have to give us anything in return. However, if you like this product 
+   you are encouraged to thank us by making a return gift to the Allegro 
+   community. This could be by writing an add-on package, providing a useful 
+   bug report, making an improvement to the library, or perhaps just 
+   releasing the sources of your program so that other people can learn from 
+   them. If you redistribute parts of this code or make a game using it, it 
+   would be nice if you mentioned Allegro somewhere in the credits, but you 
+   are not required to do this. We trust you not to abuse our generosity.

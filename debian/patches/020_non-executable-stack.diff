@@ -1,0 +1,17 @@
+Index: allegro4.2-4.2.2/src/i386/asmdefs.inc
+===================================================================
+--- allegro4.2-4.2.2.orig/src/i386/asmdefs.inc	2007-06-16 01:52:28.000000000 +0000
++++ allegro4.2-4.2.2/src/i386/asmdefs.inc	2007-09-30 18:51:02.000000000 +0000
+@@ -96,7 +96,11 @@
+  */
+ #define IRQ_STACKS      8
+ 
+-
++/* Tell GCC our stack is not executable
++ */
++#ifdef __ELF__
++.section .note.GNU-stack,"",%progbits
++#endif
+ 
+ #endif   /* ifndef ALLEGRO_ASMDEFS_INC */
+ 

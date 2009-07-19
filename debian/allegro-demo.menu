@@ -1,0 +1,2 @@
+?package(allegro-demo):needs="X11" section="Games/Action" \
+  title="Allegro Demo" command="/usr/games/all-demo"

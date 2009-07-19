@@ -1,0 +1,274 @@
+Index: allegro4.2-4.2.2/src/digmid.c
+===================================================================
+--- allegro4.2-4.2.2.orig/src/digmid.c	2006-03-18 15:05:34.000000000 +0000
++++ allegro4.2-4.2.2/src/digmid.c	2007-09-30 18:50:53.000000000 +0000
+@@ -457,7 +457,8 @@
+    AL_CONST char *name;
+    char *datafile, *objectname, *envvar, *subdir, *s;
+ 
+-   name = get_config_string(uconvert_ascii("sound", tmp1), uconvert_ascii("patches", tmp2), NULL);
++   name = get_config_string(uconvert_ascii("sound", tmp1), uconvert_ascii("patches", tmp2), uconvert_ascii("/usr/share/timidity/patches/", tmp3));
++   /* ^^ try to use Debian patches if nothing is specified ^^ */
+    datafile = uconvert_ascii("patches.dat", tmp1);
+    objectname = uconvert_ascii("default.cfg", tmp2);
+    envvar = uconvert_ascii("ULTRADIR", tmp3);
+Index: allegro4.2-4.2.2/demo/title.c
+===================================================================
+--- allegro4.2-4.2.2.orig/demo/title.c	2005-10-23 08:25:41.000000000 +0000
++++ allegro4.2-4.2.2/demo/title.c	2007-09-30 18:50:53.000000000 +0000
+@@ -134,9 +134,8 @@
+    char *s;
+    int i;
+ 
+-   get_executable_name(buf, sizeof(buf));
+-
+-   replace_filename(buf2, buf, "readme.txt", sizeof(buf2));
++   replace_filename(buf2, "/usr/share/games/allegro-demo/foo",
++                    "readme.txt", sizeof(buf2));
+    f = pack_fopen(buf2, F_READ);
+ 
+    if (!f) {
+@@ -427,8 +426,8 @@
+       return;
+ 
+    /* parse thanks._tx */
+-   get_executable_name(buf, sizeof(buf));
+-   replace_filename(buf2, buf, "../docs/src/thanks._tx", sizeof(buf2));
++   replace_filename(buf2, "/usr/share/games/allegro-demo/foo",
++                    "thanks._tx", sizeof(buf2));
+ 
+    f = pack_fopen(buf2, F_READ);
+    if (!f)
+@@ -496,6 +495,7 @@
+ 
+    pack_fclose(f);
+ 
++#if 0
+    /* parse source files */
+    get_executable_name(buf, sizeof(buf));
+    replace_filename(buf2, buf, "../*.*", sizeof(buf2));
+@@ -503,6 +503,7 @@
+    for_each_file_ex(buf2, 0, ~(FA_ARCH | FA_RDONLY | FA_DIREC),
+                     parse_source,
+                     (void *)(unsigned long)(strlen(buf2) - 3));
++#endif
+ 
+    /* sort the lists */
+    sort_credit_list();
+Index: allegro4.2-4.2.2/demo/demo.c
+===================================================================
+--- allegro4.2-4.2.2.orig/demo/demo.c	2006-01-02 00:07:55.000000000 +0000
++++ allegro4.2-4.2.2/demo/demo.c	2007-09-30 18:50:53.000000000 +0000
+@@ -32,6 +32,8 @@
+    gui_bg_color = palette_color[1];
+ }
+ 
++/* Path to the data */
++#define DATA_DIR "/usr/share/games/allegro-demo/foo"
+ 
+ 
+ static void intro_screen(void)
+@@ -81,7 +83,8 @@
+    install_timer();
+    install_mouse();
+ 
+-   if (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL) != 0) {
++   if ((install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL) != 0)
++       && (install_sound(DIGI_AUTODETECT, MIDI_AUTODETECT, NULL) != 0)) {
+       allegro_message("Error initialising sound\n%s\n", allegro_error);
+       install_sound(DIGI_NONE, MIDI_NONE, NULL);
+    }
+@@ -100,7 +103,7 @@
+       }
+    }
+ 
+-   get_executable_name(buf, sizeof(buf));
++   sprintf(buf, DATA_DIR);
+    replace_filename(buf2, buf, "demo.dat", sizeof(buf2));
+    set_color_conversion(COLORCONV_NONE);
+    data = load_datafile(buf2);
+Index: allegro4.2-4.2.2/examples/exalpha.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exalpha.c	2005-02-13 21:01:30.000000000 +0000
++++ allegro4.2-4.2.2/examples/exalpha.c	2007-09-30 18:50:53.000000000 +0000
+@@ -69,7 +69,7 @@
+    }
+ 
+    /* load the background picture */
+-   replace_filename(buf, argv[0], "allegro.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "allegro.pcx", sizeof(buf));
+    background = load_bitmap(buf, NULL);
+    if (!background) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+@@ -88,7 +88,7 @@
+     * was already a 32 bit RGBA sprite, we would probably want to use
+     * set_color_conversion(COLORCONV_NONE) instead.
+     */
+-   replace_filename(buf, argv[0], "mysha.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "mysha.pcx", sizeof(buf));
+    alpha = load_bitmap(buf, NULL);
+    if (!alpha) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/exblend.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exblend.c	2007-05-20 01:33:55.000000000 +0000
++++ allegro4.2-4.2.2/examples/exblend.c	2007-09-30 18:50:53.000000000 +0000
+@@ -74,7 +74,7 @@
+    set_color_conversion(COLORCONV_TOTAL);
+ 
+    /* load the first picture */
+-   replace_filename(buf, argv[0], "allegro.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "allegro.pcx", sizeof(buf));
+    image1 = load_bitmap(buf, pal);
+    if (!image1) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+@@ -83,7 +83,7 @@
+    }
+ 
+    /* load the second picture */
+-   replace_filename(buf, argv[0], "mysha.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "mysha.pcx", sizeof(buf));
+    image2 = load_bitmap(buf, pal);
+    if (!image2) {
+       destroy_bitmap(image1);
+Index: allegro4.2-4.2.2/examples/exlights.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exlights.c	2006-08-30 08:21:43.000000000 +0000
++++ allegro4.2-4.2.2/examples/exlights.c	2007-09-30 18:50:53.000000000 +0000
+@@ -432,7 +432,7 @@
+    buffer = create_bitmap_ex(8, SCREEN_W*3, SCREEN_H);
+ 
+    /* load the first picture */
+-   replace_filename(buf, argv[0], "allegro.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "allegro.pcx", sizeof(buf));
+    tmp = load_bitmap(buf, pal);
+    if (!tmp) {
+       destroy_bitmap(buffer);
+@@ -446,7 +446,7 @@
+    destroy_bitmap(tmp);
+ 
+    /* load the second picture */
+-   replace_filename(buf, argv[0], "mysha.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "mysha.pcx", sizeof(buf));
+    tmp = load_bitmap(buf, pal);
+    if (!tmp) {
+       destroy_bitmap(buffer);
+Index: allegro4.2-4.2.2/examples/exgui.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exgui.c	2007-05-20 01:33:55.000000000 +0000
++++ allegro4.2-4.2.2/examples/exgui.c	2007-09-30 18:50:53.000000000 +0000
+@@ -320,7 +320,7 @@
+    }
+ 
+    /* load the datafile */
+-   replace_filename(buf, argv[0], "example.dat", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "example.dat", sizeof(buf));
+    datafile = load_datafile(buf);
+    if (!datafile) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/exscale.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exscale.c	2007-05-20 01:33:55.000000000 +0000
++++ allegro4.2-4.2.2/examples/exscale.c	2007-09-30 18:50:53.000000000 +0000
+@@ -29,7 +29,7 @@
+       }
+    }
+ 
+-   replace_filename(pcx_name, argv[0], "mysha.pcx", sizeof(pcx_name));
++   replace_filename(pcx_name, "/usr/share/games/allegro-examples/foo", "mysha.pcx", sizeof(pcx_name));
+    scr_buffer = load_pcx(pcx_name, my_palette);
+    if (!scr_buffer) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/exunicod.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exunicod.c	2007-06-11 13:42:49.000000000 +0000
++++ allegro4.2-4.2.2/examples/exunicod.c	2007-09-30 18:50:53.000000000 +0000
+@@ -149,7 +149,7 @@
+    install_timer();
+ 
+    /* load the datafile containing the Unicode font */
+-   replace_filename(buf, uconvert_ascii(argv[0], tmp), uconvert_ascii(DATAFILE_NAME, tmp2), sizeof(buf));
++   replace_filename(buf, uconvert_ascii("/usr/share/games/allegro-examples/foo", tmp), uconvert_ascii(DATAFILE_NAME, tmp2), sizeof(buf));
+    data = load_datafile(buf);
+    if (!data) {
+       allegro_message(uconvert_ascii("Unable to load %s\n", tmp), buf);
+Index: allegro4.2-4.2.2/examples/exshade.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exshade.c	2007-05-20 01:33:55.000000000 +0000
++++ allegro4.2-4.2.2/examples/exshade.c	2007-09-30 18:50:53.000000000 +0000
+@@ -65,7 +65,7 @@
+       }
+    }
+ 
+-   replace_filename(buf, argv[0], "planet.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "planet.pcx", sizeof(buf));
+ 
+    planet = load_bitmap(buf, pal);
+    if (!planet) {
+Index: allegro4.2-4.2.2/examples/exsprite.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exsprite.c	2006-08-31 01:14:12.000000000 +0000
++++ allegro4.2-4.2.2/examples/exsprite.c	2007-09-30 18:50:53.000000000 +0000
+@@ -136,8 +136,8 @@
+    }
+ 
+    /* loads datafile and sets user palette saved in datafile */
+-   replace_filename(datafile_name, argv[0], "running.dat",
+-		    sizeof(datafile_name));
++   replace_filename(datafile_name, "/usr/share/games/allegro-examples/foo",
++                    "running.dat", sizeof(datafile_name));
+    running_data = load_datafile(datafile_name);
+    if (!running_data) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/exdata.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exdata.c	2005-02-13 21:01:30.000000000 +0000
++++ allegro4.2-4.2.2/examples/exdata.c	2007-09-30 18:50:53.000000000 +0000
+@@ -40,7 +40,7 @@
+    set_color_conversion(COLORCONV_NONE);
+ 
+    /* load the datafile into memory */
+-   replace_filename(buf, argv[0], "example.dat", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "example.dat", sizeof(buf));
+    datafile = load_datafile(buf);
+    if (!datafile) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/extrans.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/extrans.c	2007-05-20 01:33:55.000000000 +0000
++++ allegro4.2-4.2.2/examples/extrans.c	2007-09-30 18:50:53.000000000 +0000
+@@ -63,7 +63,7 @@
+    if (argc > 1)
+       filename = argv[1];
+    else {
+-      replace_filename(buf, argv[0], "allegro.pcx", sizeof(buf));
++      replace_filename(buf, "/usr/share/games/allegro-examples/foo", "allegro.pcx", sizeof(buf));
+       filename = buf;
+    }
+ 
+Index: allegro4.2-4.2.2/examples/exaccel.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/exaccel.c	2005-02-13 21:01:30.000000000 +0000
++++ allegro4.2-4.2.2/examples/exaccel.c	2007-09-30 18:50:53.000000000 +0000
+@@ -87,7 +87,7 @@
+    }
+ 
+    /* read in the source graphic */
+-   replace_filename(buf, argv[0], "mysha.pcx", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "mysha.pcx", sizeof(buf));
+    image = load_bitmap(buf, pal);
+    if (!image) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);
+Index: allegro4.2-4.2.2/examples/excustom.c
+===================================================================
+--- allegro4.2-4.2.2.orig/examples/excustom.c	2006-11-10 07:05:26.000000000 +0000
++++ allegro4.2-4.2.2/examples/excustom.c	2007-09-30 18:50:53.000000000 +0000
+@@ -225,7 +225,7 @@
+    }
+    
+    /* load the datafile */
+-   replace_filename(buf, argv[0], "example.dat", sizeof(buf));
++   replace_filename(buf, "/usr/share/games/allegro-examples/foo", "example.dat", sizeof(buf));
+    datafile = load_datafile(buf);
+    if (!datafile) {
+       set_gfx_mode(GFX_TEXT, 0, 0, 0, 0);

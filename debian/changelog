@@ -1,0 +1,734 @@
+allegro4.2 (2:4.2.2-2.1ubuntu1) karmic; urgency=low
+
+  * Merge from debian unstable, remaining changes: LP: #401293
+    - Remove arts from dependencies. LP: #320915
+      + debian/control:
+        - Remove libartsc0-dev from build depends
+        - Don't build package liballegro4.2-plugin-arts
+        - Remove liballegro4.2-plugin-arts from suggests of liballegro4.2
+      + debian/rules:
+        - Add --enable-artsdigi=no to ./configure
+        - Remove all lines specific to liballegro4.2-plugin-arts
+
+ -- Bhavani Shankar <right2bhavi@gmail.com>  Sun, 19 Jul 2009 12:12:05 +0530
+
+allegro4.2 (2:4.2.2-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+
+  * debian/patches/06_fix_fnstsw.diff:
+    + Fix FTBFS with binutils >= 1.9. Quoting the patch submitter:
+      “FNSTSW is "Store FPU Status Word". This status word is a 16-bit
+      value so the destination register should be %ax, not %eax.”
+      Thanks to Peter De Wachter (Closes: #510500, #518732).
+
+  * Set urgency to “medium”, testing is also affected.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 17 Jul 2009 20:36:38 +0200
+
+allegro4.2 (2:4.2.2-2ubuntu1) jaunty; urgency=low
+
+  * Remove arts from dependencies. (LP: #320915)
+    - debian/control:
+      - Remove libartsc0-dev from build depends
+      - Don't build package liballegro4.2-plugin-arts
+      - Remove liballegro4.2-plugin-arts from suggests of liballegro4.2
+    - debian/rules:
+      + Add --enable-artsdigi=no to ./configure
+      - Remove all lines specific to liballegro4.2-plugin-arts
+    - Add 060_asm_fixes.diff to fix asm related FTBFS
+
+ -- Andreas Wenning <awen@awen.dk>  Mon, 02 Feb 2009 18:17:48 +0100
+
+allegro4.2 (2:4.2.2-2) unstable; urgency=low
+
+  * debian/control:
+    + Add ${shlibs:Depends} to the liballegro4.2-dev dependencies.
+    + Set policy to 3.7.3.
+
+  * debian/rules:
+    + Ensure that packages built with liballegro 4.2.2 depend on liballegro
+      >= 4.2.2 (Closes: #468081).
+
+  * debian/create_allegro-examples.pl:
+    + Fix a "read without variable" bashism (Closes: #465134).
+
+  * debian/patches/005_no_unsharable.diff:
+    + Remove extraneous libraries from allegro-config --libs output. Patch
+      courtesy of Peter De Wachter (Closes: #462679).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 03 Mar 2008 11:28:56 +0100
+
+allegro4.2 (2:4.2.2-1) unstable; urgency=low
+
+  * New upstream release (Closes: #434755, #402131).
+    + This release no longer exports autoconf-specific macros such as
+      PACKAGE_NAME in alunixac.h (Closes: #431417).
+
+  * debian/control:
+    + Replace ${Source-Version} with ${binary:Version}.
+    + Do not build-depend on libasound-dev on Hurd (Closes: #407137).
+
+  * debian/rules:
+    + Do not ignore make veryclean errors.
+    + Configure with --enable-svgalib=no rather than --enable-linux=no, so
+      that alunixac.h defines ALLEGRO_LINUX again on !i386 platforms
+      (Closes: #437688).
+
+  * debian/allegro-examples.menu:
+    + Use “Applications” instead of “Apps”.
+  * debian/allegro-demo.menu:
+    + Use “Games/Action” instead of “Games/Arcade”.
+
+  * debian/patches/050_manpage_syntax.diff:
+    + New patch. Use \(de instead of ° in docs/src/allegro._tx to avoid
+      errors in manpages.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 30 Sep 2007 23:21:04 +0000
+
+allegro4.2 (2:4.2.0-5) unstable; urgency=low
+
+  * debian/control:
+    + Exclude libasound2-dev from the build-dependencies on kfreebsd-amd64
+      in addition to kfreebsd-i386 (Closes: #361454).
+    + Set policy to 3.7.2.
+  * debian/liballegro-doc.doc-base:
+    + allegro.txt was renamed to readme.txt, reflect this change here.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 21 May 2006 18:13:05 +0200
+
+allegro4.2 (2:4.2.0-4) unstable; urgency=low
+
+  * debian/control:
+    + Oops. Really fixed the missing libxcursor-dev dependency
+      (Closes: #357028).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 30 Mar 2006 23:53:50 +0200
+
+allegro4.2 (2:4.2.0-3) unstable; urgency=low
+
+  * Moved development to Alioth.
+  * debian/rules
+    + Switched to quilt for patch handling.
+  * debian/control:
+    + Build-depend on quilt.
+
+  * 005_no_strip_no_export_dynamic.diff: (new patch from old diff.gz) do not
+    strip executables or link them with -rexport-dynamic.
+
+  * 005_no_unsharable.diff: (new patch from old diff.gz) get rid of the
+    alleg_unsharable static library.
+
+  * 010_autoreconf.diff: (new patch from old diff.gz) re-run autoconf.
+
+  * 020_asm_fixes.diff: (new patch from old diff.gz) various fixes for the
+    assembly code.
+
+  * 020_data_path.diff: (new patch from old diff.gz) hardcode data paths
+    instead of relying on the executable location.
+
+  * 020_debug.diff: (new patch from old diff.gz) added debug messages.
+
+  * 020_non-executable-stack.diff: (new patch from old diff.gz) tell gcc
+    that our assembly files do not have an executable stack.
+
+  * 030_man_suffix.diff: (new patch from old diff.gz) set manpage prefixes
+    to 3alleg instead of 3.
+
+  * 040_allegro_cfg.diff: (new patch from old diff.gz) activate the XWIN
+    driver by default.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 30 Mar 2006 11:19:20 +0200
+
+allegro4.2 (2:4.2.0-2) unstable; urgency=low
+
+  * debian/rules, debian/control:
+    + kFreeBSD build fixes (Closes: #338926).
+    + Build-depend on libxcursor-dev.
+  * allegro-config:
+    + Do not link against extra libraries when dynamically linking
+      (Closes: #358598).
+  * src/i386/asmdefs.inc:
+    + Fixed assembly files so that the stack isn't marked executable.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 24 Mar 2006 20:58:13 +0100
+
+allegro4.2 (2:4.2.0-1) unstable; urgency=low
+
+  * New upstream release (Closes: #285958, #319716, #328841).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 17 Oct 2005 00:01:58 +0200
+
+allegro4.1 (2:4.1.15-6) unstable; urgency=low
+
+  * Acknowledge NMU, thanks to Graham Wilson (Closes: #285080, #317177,
+    Closes: #318363, #320258, #320485, #322515).
+
+  * debian/control:
+    + Set policy to 3.6.2.1.
+    + Build-depend on libxxf86dga-dev and libxxf86vm-dev.
+    + Make the -dev package depend on libxxf86vm-dev, too.
+    + Made allegro-demo depend on x-terminal-emulator.
+  * debian/rules:
+    + Disabled the debug version of the library. The different soname made
+      it difficult to use, and popcon only reports my installs.
+    + Use DEB_BUILD_ARCH_CPU instead of DEB_BUILD_GNU_CPU.
+  * debian/copyright:
+    + Added Shawn’s copyright mention (Closes: #290055).
+
+  * configure.in makefile.in allegro-config:
+    + Removed all _pic linking hacks that are no longer required with Xorg,
+      which make the build use libxxf86dga again (Closes: #322709).
+  * src/misc/modexgfx.s src/i386/iblit8.s iblit16.s iblit24.s iblit32.s:
+    + Fixed assembly code to make newer gcc happy (Closes: #331083).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 16 Oct 2005 12:33:29 +0200
+
+allegro4.1 (2:4.1.15-5.1) unstable; urgency=medium
+
+  * NMU with maintainer permission.
+
+  * Make the -dev package depend on libxxf86dga-dev. (closes: #320258)
+  * Build against libjack0.100.0-dev, instead of libjack0.80.0-dev.
+    (closes: #317177)
+  * Fix source to compile with gcc 4.0. (closes: #285080)
+  * Apply patch to compile on freebsd-i386. (closes: #320485)
+
+ -- Graham Wilson <graham@debian.org>  Wed, 10 Aug 2005 04:45:27 +0000
+
+allegro4.1 (2:4.1.15-5) unstable; urgency=medium
+
+  * This upload to fixes a problem in the ARM package due to a 2.6 kernel
+    ext3 corruption bug (Closes: #273497).
+  * src/allegro.c:
+    + Only print debug messages if ALLEGRO_DEBUG is set.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 26 Sep 2004 18:08:46 +0200
+
+allegro4.1 (2:4.1.15-4) unstable; urgency=medium
+
+  * docs/src/makedoc/makehtml.c:
+    + Fixed a crash with empty eref lists (Closes: #264662).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 10 Aug 2004 00:01:57 +0200
+
+allegro4.1 (2:4.1.15-3) unstable; urgency=low
+
+  * src/misc/icolconv.s:
+    + Don't build this file on non-x86 targets.
+  * src/x/xwin.c:
+    + Reverted the fullscreen patch, since it is more a X server issue.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu,  5 Aug 2004 18:26:58 +0200
+
+allegro4.1 (2:4.1.15-2) unstable; urgency=low
+
+  * debian/control:
+    + Removed duplicate Depends: line.
+    + Build-depend on libxpm.
+    + Build-depend on libxt-dev although it is not used, otherwise the
+      configure script does not find the X headers and the X driver does not
+      get built (Closes: #260504).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  4 Aug 2004 21:34:32 +0200
+
+allegro4.1 (2:4.1.15-1) unstable; urgency=low
+
+  * New upstream release.
+  * src/allegro.c:
+    + Report video drivers upon initialisation.
+  * src/x/xwin.c:
+    + Disable fullscreen mode under powerpc, sparc64 and alpha. Borrowed from
+      SDL's "buggy_X" test.
+  * src/i386/asmdef.c:
+    + Properly set asm function symbol types as @function so that executables
+      that use these symbols don't crash (Closes: #262133).
+  * examples/excustom.c:
+    + Fixed the location of example.dat.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue,  3 Aug 2004 22:49:25 +0200
+
+allegro4.1 (2:4.1.14-1) unstable; urgency=low
+
+  * New upstream release (Closes: #236493, #254094).
+  * debian/control:
+    + Renamed source package to allegro4.1 to provide smooth upgrades.
+    + Set policy to 3.6.1.1.
+    + Build-depend on ALSA 1.0 (Closes: #227344).
+  * debian/rules:
+    + Use debian/compat instead of DH_COMPAT.
+  * debian/allegro-examples.menu debian/allegro-demo.menu:
+    + Quoted strings where appropriate.
+  * makefile.in misc/deplib.sh:
+    + Got rid of the alleg_unsharable libraries so that liballeg does not rely
+      on backlinking (Closes: #229988).
+  * include/allegro/platform/alunix.h src/unix/umain.c:
+    + Wrote glue code for third-party binaries.
+  * docs/src/makedoc/makedoc.c:
+    + Fixed links within manpages.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 11 Jul 2004 17:19:12 +0200
+
+allegro4 (2:4.0.3-10) unstable; urgency=low
+
+  * debian/control:
+    + Set the liballegro-dbg package's priority to extra.
+    + Set policy to 3.6.1.0.
+    + Wrote more meaningful long descriptions (Closes: #209740).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu,  2 Oct 2003 14:53:28 +0200
+
+allegro4 (2:4.0.3-9) unstable; urgency=low
+
+  * debian/control:
+    + Set policy to 3.6.0.
+  * docs/makedoc:
+    + Included this utility in the liballegro-dev package as allegro-makedoc
+      (Closes: #201185).
+    + Wrote a manpage for allegro-makedoc.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 15 Jul 2003 00:45:24 +0200
+
+allegro4 (2:4.0.3-8) unstable; urgency=low
+
+  * debian/control:
+    + Added a new liballegro4a-dbg package containing the debug library.
+    + Added newlines in a couple of long descriptions.
+  * debian/rules:
+    + Activated compilation of the debug library.
+    + Added dh_clean -k to the install rule to make it idempotent.
+    + Updated the shlibs dependency.
+  * configure.in, aclocal.m4:
+    + Removed the -s linker flag. We use dh_strip instead.
+  * src/i386/icpu.c:
+    + Disabled the Cyrix check in debug mode, because valgrind does not
+      support this opcode sequence.
+  * src/datafile.c:
+    + Backported a patch from the WIP tree that fixes initialisation of
+      bitmaps stored within the program.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 28 Jun 2003 05:48:39 +0200
+
+allegro4 (2:4.0.3-7) unstable; urgency=low
+
+  * examples/*: set the proper path to the data in example programs.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 24 Jun 2003 13:07:01 +0200
+
+allegro4 (2:4.0.3-6) unstable; urgency=low
+
+  * debian/rules:
+    + Argh, Allegro installs the .so file as the real library, and the .so.x.y
+      file as the symlink! This lead to a major breakage since the library
+      ended in the -dev package (Closes: #197560).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 16 Jun 2003 01:20:00 +0200
+
+allegro4 (2:4.0.3-5) unstable; urgency=low
+
+  * debian/rules:
+    + Use the -s flag instead of -a so that debhelper properly handles the
+      i386-only plugin package.
+    + Cleaned up some of the rules.
+    + Added magic to avoid autoconf timestamp issues.
+  * Moved the .so link to the -dev package.
+  * The liballegro-doc package now contains all the development manual pages.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 15 Jun 2003 14:49:20 +0200
+
+allegro4 (2:4.0.3-4) unstable; urgency=low
+
+  * debian/rules:
+    + Do not call dh_makeshlibs with -V alone because our API/ABI is consistent
+      since at least 4.0.2-1, so that packages built with newer versions do not
+      have a useless dependency and work with older versions of the allegro
+      packages.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 12 Jun 2003 15:09:31 +0200
+
+allegro4 (2:4.0.3-3) unstable; urgency=low
+
+  * Added the static libraries to the build (Closes: #196175).
+  * debian/control:
+    + Created the liballegro4a-plugin-esd, liballegro4a-plugin-arts and
+      liballegro4a-plugin-svgalib plugin packages.
+    + Set policy to 3.5.10.
+    + Added libarts1-dev to the build dependencies.
+    + Removed the automake1.4 build dependency.
+  * debian/rules:
+    + "binary-indep" depends on "build".
+    + We now build the artsdigi plugin.
+    + We no longer regenerate the configure file.
+    + Made the build rule idempotent by replacing "ln -s" with "ln -sf".
+    + Removed the svgalib substvars hack which is now unneeded since the
+      svgalib plugin is in a separate package.
+  * Removed the lintian override file because we no longer call ldconfig in
+    postinst/postrm.
+  * Fixed spelling in debian/allegro-config.1 and debian/allegro-examples.1.
+  * Removed the all-demo wrapper and fixed the data location directly within
+    the program.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat,  7 Jun 2003 17:46:36 +0200
+
+allegro4 (2:4.0.3-2) unstable; urgency=medium
+
+  * Fixed a race condition in src/mixer.c that was causing crashes on SMP
+    systems (Closes: #192128).
+
+ -- Samuel Hocevar <sam@zoy.org>  Tue, 13 May 2003 02:53:22 +0200
+
+allegro4 (2:4.0.3-1) unstable; urgency=low
+
+  * New upstream release.
+  * New maintainer (Closes: #158142).
+  * Fixed a minor typo in allegro-config(1) (Closes: #141076).
+  * Ditto in postinst and prerm (Closes: #177054).
+  * Release includes a fix for the svgalib/atexit issue (Closes: #187770).
+  * Set policy to 3.5.9.0.
+  * Moved allegro-examples datafiles to /usr/share instead of /usr/lib.
+  * Did not build the arts plugin because of heavy dependencies.
+
+ -- Samuel Hocevar <sam@zoy.org>  Thu,  5 May 2003 01:18:27 +0200
+
+allegro4 (2:4.0.2-1.1) unstable; urgency=low
+
+  * NMU
+  * Update build-depends to automake1.4. (Closes: #166384)
+
+ -- Eric Dorland <eric@debian.org>  Sat, 23 Nov 2002 19:51:52 -0500
+
+allegro4 (2:4.0.2-1) unstable; urgency=low
+
+  * New upstream release
+  * In-place ABI transtition to asm-optimised version
+    - more drivers
+    - updated shlibs
+    - changed liballegro4 to liballegro4a
+
+ -- Eduard Bloch <blade@debian.org>  Thu, 22 Aug 2002 18:48:22 +0200
+
+allegro4 (2:4.0.1-2) unstable; urgency=low
+
+  * Changed the location of source.tgz while creating it. Fixes build problems
+    on systems with touchy tar implementations, closes: #147234
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 17 May 2002 10:23:21 +0200
+
+allegro4 (2:4.0.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 19 Mar 2002 01:59:03 +0100
+
+allegro4 (2:4.0.0-1) unstable; urgency=low
+
+  * New upstream release - the official stable
+  * Cleanup - this release is for Woody
+  * Removing my hacks used to distinguish the library and compiler version,
+    fixed in upstream source.
+  * Increasing Epoch to get rid of the ugly version names
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 18 Jan 2002 00:44:10 +0100
+
+allegro3940 (1:3940.1-3) unstable; urgency=low
+
+  * xlibs-pic is finally there ;) Enabling in control, rules.
+  * cleaned up with BASHism in rules
+  * misc/deplib.sh: reverted change in the linker call - should work with
+    xlibs-pic on all architectures now. Closes: Bug#122897
+  * liballegro-doc: examples now tar'ed, dropped PS version for disk space
+    reason. Reference to web versions documented in liballegro-doc.README.Debian.
+
+ -- Eduard Bloch <blade@debian.org>  Thu,  6 Dec 2001 00:15:15 +0100
+
+allegro3940 (1:3940.1-2) unstable; urgency=low
+
+  * modified configure.in to disable -fomit-frame-pointer on i386/gcc-3
+    - removing explicit Build-Depends on gcc-2.95
+  * Removed xlibs-pic from the list of alternatives, some build daemons sucked
+    on interpreting it. Since Branden needs to long to make xlibs-pic ready,
+    no DGA output is possible in the meantime. Closes: #121828
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 30 Nov 2001 11:36:40 +0100
+
+allegro3940 (1:3940.1-1) unstable; urgency=low
+
+  * fixed build-depends, too much copy&paste-work... (Closes: #120901)
+  * removed auto-generated crap from upstream source
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 24 Nov 2001 17:20:48 +0100
+
+allegro3940 (1:3940-1) unstable; urgency=low
+
+  * New upstream release
+  * preparing for xlibs-pic:
+    - hacked autoconf files to use xlibs-pic, building accelerated drivers for
+      all architectures.
+    - rules, control, checkpic.sh: prepared building with xlibs-pic
+  * removed ALSA support, the things are too unstable for me
+  * droped -xp-dev and -dev-common, the plugins give us enough binary
+    independency
+  * enabled few Linux specific console drivers on i386, which would not break
+    binary compatibility
+
+ -- Eduard Bloch <blade@debian.org>  Tue, 20 Nov 2001 23:18:10 +0100
+
+allegro3939 (1:3939-2) unstable; urgency=low
+
+  * fixed Build-Dependencies, accidentely f***ed up while trying to force a
+    working gcc-3.0 version. gcc-3.0 is still broken on i386. Closes: #117066
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 26 Oct 2001 18:26:06 +0200
+
+allegro3939 (1:3939-1) unstable; urgency=low
+
+  * new upstream release. Spawning a new branch, 3938 will go soon.
+
+ -- Eduard Bloch <blade@debian.org>  Thu,  4 Oct 2001 15:09:34 +0200
+
+allegro3938 (1:3938-2) unstable; urgency=low
+
+  * disabled ALSA plugin. Breaks autodetection of the midi driver.
+  * removed double dependencies from allegro-demo and allegro-examples. I guess
+    I was using broken debhelper when I wrote the control file :((
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 19 Sep 2001 20:01:36 +0200
+
+allegro3938 (1:3938-1) unstable; urgency=low
+
+  * new upstream release. New branch spawned.
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 17 Sep 2001 19:10:29 +0200
+
+allegro3937 (1:3937-7) unstable; urgency=low
+
+  * set Priorities manually, everything optional, -xp-dev extra
+  * reorganisation: only liballegro3.9.37 has a branch specific name
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 26 Aug 2001 22:45:59 +0200
+
+allegro3937 (1:3937-6) unstable; urgency=low
+
+  * Changed priority, closes: #110124
+  * fixed typo in checkpic.sh
+  * updated Standards-Version
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 26 Aug 2001 13:09:46 +0200
+
+allegro3937 (1:3937-5) unstable; urgency=low
+
+  * used /bin/sh to invoke checkpic.sh <ashamed>
+
+ -- Eduard Bloch <blade@debian.org>  Thu, 16 Aug 2001 23:21:03 +0200
+
+allegro3937 (1:3937-4) unstable; urgency=low
+
+  * fixed depmod.sh, esd plugin compiles without non-PIC code
+  * checkpic.sh, wrapper for configure, looks for the right compiler 
+    and allows DGA if working (non-PIC-libXxf86dga issue)
+
+ -- Eduard Bloch <blade@debian.org>  Thu, 16 Aug 2001 13:28:01 +0200
+
+allegro3937 (1:3937-3) unstable; urgency=low
+
+  * Removed spline.3.gz from -dev-common, Closes: #107097
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 29 Jul 2001 16:55:08 +0200
+
+allegro3937 (1:3937-2) unstable; urgency=low
+
+  * perl hack to remove wrong deps on != i386, Closes: #106153
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 23 Jul 2001 18:22:22 +0200
+
+allegro3937 (1:3937-1) unstable; urgency=low
+
+  * To FTP maintainers: Please allow this packages to go into frozen, this
+    release fixes serious bugs in previous allegro series.
+  * new upstream WIP release, new branch of Allegro packages:
+    various bugfixes, for midi slowdown bug among others
+  * set Build-Dependency on gcc-2.95 for i386, gcc-3.0 misscompiles on this
+    architecture. Included a query to use the right compiler.
+  * no dga, no dga2, no vidmode, no esddigi - trouble with non-PIC code in
+    these libraries, waiting for fixes in them (or for my upstream to create a
+    workaround in Allegro)
+  * creating -dev package for dynamic linking again, useless to separate them
+  * removed config.c-patch, fixed in upstream release (see CHANGES)
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 15 Jul 2001 17:05:17 +0200
+
+allegro3936 (1:3936-5) unstable; urgency=low
+
+  * disabled assembler optimisation on i386, making binary sizes smaller
+  * removed dh_upx calls - quite useless with this small binaries
+  * set gcc-2.95 to Build-Depends since gcc-3.0 may miscompile
+  * a user reported instability of the dga2 driver on alpha, disabling dga*
+
+ -- Eduard Bloch <blade@debian.org>  Fri,  8 Jun 2001 18:51:18 +0200
+
+allegro3936 (1:3936-4) unstable; urgency=low
+
+  * fixed Depends: (still wondering why debhelper didn't break
+    the last time and warned me while building), Closes: #98930
+  * Changed sections to describe the function better
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 27 May 2001 19:05:59 +0200
+
+allegro3936 (1:3936-3) unstable; urgency=low
+
+  * added Conflicts: to -dev-common, preventing clashes with old
+    liballegro-dev packages
+  * rules uses the veryclean rule and (hopefully) always removes other garbage
+  * -demo: changed locations to make it FHS compliant
+  * -examples: 
+    - changed locations to make it FHS compliant
+    - droped unuseable examples
+  * -doc: dropped dvi file (did anyone really need it?)
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 26 May 2001 09:49:06 +0200
+
+allegro3936 (1:3936-2) unstable; urgency=low
+
+  * changed rules for -dev and -xp-dev in order not to remove 
+    allegro-config but other executables
+  * fixed typo in rules, Closes: #98486
+  * minor cosmetical changes in manpages
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 23 May 2001 12:20:09 +0200
+
+allegro3936 (1:3936-1) unstable; urgency=low
+
+  * new upstream release, Closes: #97322
+  * changed naming convention, changed strategy. Static libs are no
+    longer in sync with the shared library because of lacking ABI
+    compatibility
+  * new packages: liballegro*-xp-dev, liballegro*-dev-common
+  * moved allegro.cfg to doc directory to avoid the clash with older releases
+  * hacked digmid.c to use Debian's timidity-patches as default
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 21 May 2001 18:00:49 +0200
+
+allegro (1:3935pre1-7) unstable; urgency=low
+
+  * disabled svgalib
+  * this is definitely the last package of 3935pre1 series, prefert the
+    newer ones
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 21 May 2001 17:59:21 +0200
+
+allegro (1:3935pre1-6) unstable; urgency=low
+
+  * svgalib disabled on !i386, changed Build-Depends. Closes: #93495
+  * patched deplib.sh so library is compiled with soname, resolved
+    shlibs problems
+  * typos in previous changelog entry: 
+    disabled dga driver until it is fixed, Closes: #90250
+
+ -- Eduard Bloch <blade@debian.org>  Wed, 11 Apr 2001 00:03:04 +0200
+
+allegro (1:3935pre1-5) unstable; urgency=low
+
+  * default config has new path to timidity-patches. potato-downgraders have to change back manually, sorry.
+  * creating shlibs manually, dh_makeshlibs fails because of unknown soname. Closes: #91277
+  * disabled dga driver until it is fixed, Closes #90250
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  9 Apr 2001 08:24:51 +0200
+
+allegro (1:3935pre1-4) unstable; urgency=low
+
+  * new manpages, no longer using installman(pages)
+  * added build-depends, removed undocumented manpages, should be lintian-clean and policy-conform now
+  * build-depends corrected, Closes: #90321
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 24 Mar 2001 13:00:00 +0100
+
+allegro (1:3935pre1-3) unstable; urgency=low
+
+  * b-d again. Appeasing broken autobuilders.
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 17 Feb 2001 11:56:09 +0100
+
+allegro (1:3935pre1-2) unstable; urgency=low
+
+  * changed Build-Depends again. Ugly sollution, anyways. Closes: #83223
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 11 Feb 2001 16:49:33 +0100
+
+allegro (1:3935pre1-1) unstable; urgency=low
+
+  * new WIP version. package name will remain until compability issues are resolved. Changed description in README.Debian
+  * CVS date no longer stored in the package name, but epoch changed to make sure that apt works
+
+ -- Eduard Bloch <blade@debian.org>  Sat,  3 Feb 2001 11:47:02 +0100
+
+allegro (20010121-2) unstable; urgency=low
+
+  * changing build depends, Closes: #83223
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 26 Jan 2001 22:08:21 +0100
+
+allegro (20010121-1) unstable; urgency=low
+
+  * new upstream release
+  * the idea with several versions is frozen until Allegro supports dynamical loading of drivers
+  * added more Build-Depends
+  * included svgalib-dummyg1 as alternative to svgalibg1, Closes: #81605
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 21 Jan 2001 10:01:28 +0100
+
+allegro (20010112-1) unstable; urgency=low
+
+  * new upstream release
+  * this version is not to be released officialy
+  * added more Build-Depends
+  * creating 2 additional versions of the library allegro: tiny-x, tiny-con
+
+ -- Eduard Bloch <blade@debian.org>  Fri, 12 Jan 2001 23:17:23 +0100
+
+allegro (20010101-1) unstable; urgency=low
+
+  * updated CVS version.
+  * added a platform check for configure. now, no linux-console drivers will be build on non-i386, but it will compile!
+  * disabled some unstable drivers: ggi, alsadigi, alsamidi.
+  * modified demo to work without midi sound, sending a patch to Shawn.
+  * Installing docs/thanks._tx to show some credits in the demo
+  * ALSA user have to install OSS emulation, I won't compile with ALSA drivers since the API changes to often, IMHO
+  * added more Build-Depends, but texi2dvi still freezes on potato without tetex-nonfree
+  * got permission from Shawn and added defaults.cfg file to timidity-patches. Added Suggests: field.
+
+ -- Eduard Bloch <blade@debian.org>  Mon,  1 Jan 2001 19:29:04 +0100
+
+allegro (20001223-2) unstable; urgency=low
+
+  * better comments and warnings in allegro.cfg
+  * fixed a serious bug in configuration parser, reporting to upstream
+  * changed Debian section of allegro-demo, fixed wrapper script
+  * installing source of test+setup programs in examples directory (doc package)
+  * installing example+test binaries in a new package, see allegro-examples.README
+  * demo changes, installed docs/thanks._tx to show the authors. Sorting function fails now, no idea how to fix this.
+
+ -- Eduard Bloch <blade@debian.org>  Mon, 25 Dec 2000 09:36:45 +0100
+
+allegro (20001223-1) unstable; urgency=low
+
+  * Updated CVS version. Since my allegro packages are repackaged from scratch, previous bugs are irrelevant, so...
+  * Closes: #76459
+  * Closes: #75373
+  * Closes: #75374
+  * dh_makeshlibs enabled, seems to work now (Closes: #80224)
+  * allegro.cfg installed in /etc. Will try to configure it via debconf later.
+
+ -- Eduard Bloch <blade@debian.org>  Sat, 23 Dec 2000 23:07:59 +0100
+
+allegro (20001217-1) unstable; urgency=low
+
+  * Updated CVS version.
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 17 Dec 2000 02:19:18 +0100
+
+allegro (20001118-1) unstable; urgency=low
+
+  * Initial Release. Used the CVS version, it seemed to be the most stable.
+
+ -- Eduard Bloch <blade@debian.org>  Sun, 17 Dec 2000 02:18:46 +0100
+

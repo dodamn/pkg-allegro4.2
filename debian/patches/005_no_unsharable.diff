@@ -1,0 +1,195 @@
+Index: allegro4.2-4.2.2/src/unix/umain.c
+===================================================================
+--- allegro4.2-4.2.2.orig/src/unix/umain.c	2007-09-30 18:50:07.000000000 +0000
++++ allegro4.2-4.2.2/src/unix/umain.c	2007-09-30 18:50:18.000000000 +0000
+@@ -16,6 +16,9 @@
+  */
+ 
+ 
++#include <stdio.h>
++#include <dlfcn.h>
++
+ #include "allegro/internal/alconfig.h"
+ 
+ #ifdef ALLEGRO_WITH_MAGIC_MAIN
+@@ -25,7 +28,6 @@
+ 
+ extern int    __crt0_argc;
+ extern char **__crt0_argv;
+-extern void *_mangled_main_address;
+ 
+ 
+ 
+@@ -34,11 +36,28 @@
+  */
+ int main(int argc, char *argv[])
+ {
+-   int (*real_main) (int, char*[]) = (int (*) (int, char*[])) _mangled_main_address;
++   int (*real_main) (int, char*[]);
++   void **_mangled_main_address;
++   char *program = argv[0] ? argv[0] : "program";
++
++   fprintf(stderr, "allegro: %s is built with a non-Debian Allegro,"
++                   " running glue code\n", program);
++
++   _mangled_main_address = dlsym(NULL, "_mangled_main_address");
++
++   if(_mangled_main_address == NULL)
++   {
++      fprintf(stderr, "allegro: mangled main address not found\n");
++      return -1;
++   }
++
++   real_main = (int (*) (int, char*[])) *_mangled_main_address;
+ 
+    __crt0_argc = argc;
+    __crt0_argv = argv;
+ 
++   fprintf(stderr, "%s: everything went fine\n", program);
++
+    return (*real_main)(argc, argv);
+ }
+ 
+Index: allegro4.2-4.2.2/misc/deplib.sh
+===================================================================
+--- allegro4.2-4.2.2.orig/misc/deplib.sh	2007-09-30 18:50:07.000000000 +0000
++++ allegro4.2-4.2.2/misc/deplib.sh	2007-09-30 18:50:18.000000000 +0000
+@@ -37,7 +37,10 @@
+ sharable_sources=`echo $sources | sed 's,[^.	 ]*\.s,,g'`
+ sharable_sources=`echo $sharable_sources | sed 's,[	 ]*udummy\.c,,g'`
+ unsharable_sources=`echo $sources | sed 's,[^.	 ]*\.[^s],,g'`
+-unsharable_sources=`echo $unsharable_sources udummy.c`
++unsharable_sources=`echo $unsharable_sources`
++# Disable liballeg_unsharable under Debian
++sharable_sources="${sharable_sources} ${unsharable_sources}"
++unsharable_sources="udummy.c"
+ 
+ objects=`echo $sources | sed 's,\.[^.	 ]*,,g'`
+ sharable_objects=`echo $sharable_sources | sed 's,\.[^.	 ]*,,g'`
+@@ -190,15 +193,15 @@
+     # Normal library.
+     echo "\$(OBJDIR)/alleg/$name\$(OBJ): \$(srcdir)/$file$includes"
+     if test "$ext" = "c"; then
+-      echo "	\$(COMPILE_NORMAL) -c \$(srcdir)/$file -o \$(OBJDIR)/alleg/$name\$(OBJ)"
++      echo "	\$(COMPILE_NORMAL)  \$(ALLEGRO_SHAREDLIB_CFLAGS) -c \$(srcdir)/$file -o \$(OBJDIR)/alleg/$name\$(OBJ)"
+     else
+-      echo "	\$(COMPILE_S_NORMAL) -c \$(srcdir)/$file -o \$(OBJDIR)/alleg/$name\$(OBJ)"
++      echo "	\$(COMPILE_S_NORMAL) \$(ALLEGRO_SHAREDLIB_CFLAGS) -c \$(srcdir)/$file -o \$(OBJDIR)/alleg/$name\$(OBJ)"
+     fi
+     echo "\$(OBJDIR)/shared/alleg/$name\$(OBJ): \$(srcdir)/$file$includes"
+     if test "$ext" = "c"; then
+       echo "	\$(COMPILE_NORMAL) \$(ALLEGRO_SHAREDLIB_CFLAGS) -c \$(srcdir)/$file -o \$(OBJDIR)/shared/alleg/$name\$(OBJ)"
+     else
+-      echo "	\$(COMPILE_S_NORMAL) -c \$(srcdir)/$file -o \$(OBJDIR)/shared/alleg/$name\$(OBJ)"
++      echo "	\$(COMPILE_S_NORMAL) \$(ALLEGRO_SHAREDLIB_CFLAGS) -c \$(srcdir)/$file -o \$(OBJDIR)/shared/alleg/$name\$(OBJ)"
+     fi
+     echo ""
+ 
+Index: allegro4.2-4.2.2/misc/allegro-config.in
+===================================================================
+--- allegro4.2-4.2.2.orig/misc/allegro-config.in	2007-09-30 18:50:07.000000000 +0000
++++ allegro4.2-4.2.2/misc/allegro-config.in	2007-09-30 18:50:18.000000000 +0000
+@@ -26,6 +26,7 @@
+ 
+ allegro_ldflags="@LDFLAGS@"
+ allegro_libs="@LIBS@"
++
+ allegro_frameworks="@FRAMEWORKS@"
+ allegro_cflags=""
+ allegro_cppflags=""
+@@ -183,9 +184,9 @@
+ if test "$echo_libs" = "yes"; then
+    libdirs=-L${lib_path}
+    if test "$static_libs" = "yes"; then
+-      echo $libdirs $allegro_ldflags -l${lib_type} $allegro_libs
++      echo $libdirs $allegro_ldflags -l${lib_type} ${allegro_libs}
+    else
+-      echo $libdirs $allegro_ldflags -l${lib_type}-${version} -l${lib_type}_unsharable
++      echo $libdirs $allegro_ldflags -l${lib_type}-${version}
+    fi
+ fi
+ 
+Index: allegro4.2-4.2.2/configure.in
+===================================================================
+--- allegro4.2-4.2.2.orig/configure.in	2007-09-30 18:50:14.000000000 +0000
++++ allegro4.2-4.2.2/configure.in	2007-09-30 18:50:18.000000000 +0000
+@@ -310,8 +310,8 @@
+   allegro_static_libraries=yes
+   _programs="statically linked $_programs"
+ else
+-  LIBALLEG="lib/unix/lib${LIB_TO_LINK}-\$(shared_version).so lib/unix/lib${LIB_TO_LINK}_unsharable.a"
+-  LINK_LIBALLEG="-Llib/unix -l${LIB_TO_LINK}-\$(shared_version) -l${LIB_TO_LINK}_unsharable -lm"
++  LIBALLEG="lib/unix/lib${LIB_TO_LINK}-\$(shared_version).so"
++  LINK_LIBALLEG="-Llib/unix -l${LIB_TO_LINK}-\$(shared_version) -lm"
+   LINK_WITH_STATIC_LIBS=no
+   allegro_shared_libraries=yes
+   _programs="dynamically linked $_programs"
+@@ -350,15 +350,15 @@
+ 
+   _libraries="$_libraries shared"
+   if test "X$allegro_build_normal_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballeg-\$(shared_version).so lib/unix/liballeg_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballeg-\$(shared_version).so"
+     _libraries="$_libraries release"
+   fi
+   if test "X$allegro_build_debugging_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballd-\$(shared_version).so lib/unix/liballd_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballd-\$(shared_version).so"
+     _libraries="$_libraries debug"
+   fi
+   if test "X$allegro_build_profiling_library" = "Xyes"; then
+-    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballp-\$(shared_version).so lib/unix/liballp_unsharable.a"
++    ALLEGRO_LIB_TARGETS="$ALLEGRO_LIB_TARGETS lib/unix/liballp-\$(shared_version).so"
+     _libraries="$_libraries profile"
+   fi
+ fi
+Index: allegro4.2-4.2.2/makefile.in
+===================================================================
+--- allegro4.2-4.2.2.orig/makefile.in	2007-09-30 18:50:07.000000000 +0000
++++ allegro4.2-4.2.2/makefile.in	2007-09-30 18:50:18.000000000 +0000
+@@ -467,7 +467,6 @@
+ 	  if test -f $(LIBDIR)/lib$${l}-$(shared_version).so; then \
+ 	    echo Installing $(LIBDIR)/lib$${l}-$(shared_version).so to $(DESTDIR)$(libdir); \
+ 	    $(INSTALL_PROGRAM) $(LIBDIR)/lib$${l}-$(shared_version).so $(DESTDIR)$(libdir)/; \
+-	    $(INSTALL_DATA) $(LIBDIR)/lib$${l}_unsharable.a $(DESTDIR)$(libdir)/; \
+ 	  fi; \
+ 	done
+ 	@if test -n "$(ALLEGRO_MODULE_TARGETS)"; then \
+@@ -594,7 +593,6 @@
+ uninstall-lib:
+ 	@echo "Uninstalling libraries..."
+ 	@for l in alleg alld allp; do \
+-	  rm -f $(libdir)/lib$${l}_unsharable.a; \
+ 	  rm -f $(libdir)/lib$${l}.a; \
+ 	done
+ 	rm -f $(bindir)/allegro-config
+Index: allegro4.2-4.2.2/include/allegro/platform/alunix.h
+===================================================================
+--- allegro4.2-4.2.2.orig/include/allegro/platform/alunix.h	2007-09-30 18:50:07.000000000 +0000
++++ allegro4.2-4.2.2/include/allegro/platform/alunix.h	2007-09-30 18:50:18.000000000 +0000
+@@ -29,12 +29,22 @@
+ 
+    #ifndef ALLEGRO_NO_MAGIC_MAIN
+       #define ALLEGRO_MAGIC_MAIN
+-      #define main _mangled_main
+       #undef END_OF_MAIN
+-      #define END_OF_MAIN() void *_mangled_main_address = (void*) _mangled_main;
++   #define END_OF_MAIN()
++   #define main(a,b...) \
++      _mangled_main(a,##b); \
++      int main(int argc, char *argv[]) \
++      { \
++         int (*real_main) (int, char*[]) = \
++            (int (*) (int, char*[])) _mangled_main; \
++         __crt0_argc = argc; \
++         __crt0_argv = argv; \
++         return (*real_main)(argc, argv); \
++      }; \
++      int _mangled_main(a,##b)
+    #else
+       #undef END_OF_MAIN
+-      #define END_OF_MAIN() void *_mangled_main_address;
++      #define END_OF_MAIN()
+    #endif
+ 
+ #endif

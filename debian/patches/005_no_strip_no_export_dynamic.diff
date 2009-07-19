@@ -1,0 +1,34 @@
+Index: allegro4.2-4.2.2/aclocal.m4
+===================================================================
+--- allegro4.2-4.2.2.orig/aclocal.m4	2007-09-30 18:50:10.000000000 +0000
++++ allegro4.2-4.2.2/aclocal.m4	2007-09-30 18:50:14.000000000 +0000
+@@ -182,7 +182,6 @@
+       dnl Use libdl if found, else assume dl* functions in libc.
+       AC_CHECK_LIB(dl, dlopen,
+         [LIBS="-ldl $LIBS"])
+-      LDFLAGS="-Wl,--export-dynamic $LDFLAGS"
+     fi])
+ fi
+ ])
+@@ -805,7 +804,7 @@
+ AC_DEFUN(ALLEGRO_ACTEST_PROG_LD_S,
+ [AC_MSG_CHECKING(whether linker works with -s option)
+ allegro_save_LDFLAGS=$LDFLAGS
+-LDFLAGS="-s $LDFLAGS"
++LDFLAGS="$LDFLAGS"
+ AC_CACHE_VAL(allegro_cv_prog_ld_s, [
+ AC_TRY_LINK(,{},allegro_cv_prog_ld_s=yes, allegro_cv_prog_ld_s=no)])
+ LDFLAGS=$allegro_save_LDFLAGS
+Index: allegro4.2-4.2.2/configure.in
+===================================================================
+--- allegro4.2-4.2.2.orig/configure.in	2007-09-30 18:50:10.000000000 +0000
++++ allegro4.2-4.2.2/configure.in	2007-09-30 18:50:14.000000000 +0000
+@@ -294,7 +294,7 @@
+   COMPILE_CXX_PROGRAM=COMPILE_CXX_NORMAL
+   COMPILE_S_PROGRAM=COMPILE_S_NORMAL
+   if test "X$allegro_cv_prog_ld_s" = "Xyes"; then
+-    PROG_LDFLAGS="-s \$(LDFLAGS)"
++    PROG_LDFLAGS="\$(LDFLAGS)"
+   else
+     PROG_LDFLAGS="\$(LDFLAGS)"
+   fi

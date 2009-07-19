@@ -1,0 +1,15 @@
+Document: liballegro-doc
+Title: Debian Allegro library Manual
+Author: Various
+Abstract: This manual describes what Allegro is
+ and how it can be used to program platform-independent games and
+ multimedia applications.
+Section: Apps/Programming
+
+Format: text
+Files: /usr/share/doc/liballegro-doc/readme.txt.gz
+
+Format: HTML
+Index: /usr/share/doc/liballegro-doc/html/allegro.html
+Files: /usr/share/doc/liballegro-doc/html/*.html
+

@@ -1,0 +1,13 @@
+Index: allegro4.2-4.2.2/docs/src/allegro._tx
+===================================================================
+--- allegro4.2-4.2.2.orig/docs/src/allegro._tx	2007-09-30 19:27:44.000000000 +0000
++++ allegro4.2-4.2.2/docs/src/allegro._tx	2007-09-30 19:28:17.000000000 +0000
+@@ -12115,7 +12115,7 @@
+    The fov parameter specifies the field of view (ie. width of the camera
+    focus) in binary, 256 degrees to the circle format. For typical
+    projections, a field of view in the region 32-48 will work well. 64
+-   (90°) applies no extra scaling - so something which is one unit away
++   (90\(de) applies no extra scaling - so something which is one unit away
+    from the viewer will be directly scaled to the viewport. A bigger FOV
+    moves you closer to the viewing plane, so more objects will appear. A
+    smaller FOV moves you away from the viewing plane, which means you see a

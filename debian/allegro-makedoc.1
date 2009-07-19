@@ -1,0 +1,57 @@
+.TH ALLEGRO 1 "15 July 2003" Version 4.0.3
+.SH NAME
+allegro-makedoc - script to generate Allegro documentation
+.SH SYNOPSIS
+.B allegro-makedoc
+[\-ascii OUTFILE] [\-html OUTFILE|\-htm OUTFILE] [\-texi OUTFILE|\-txi OUTFILE] [\-rtf OUTFILE] [\-man OUTFILE] [\-part] [\-warn] INFILE
+.SH DESCRIPTION
+.PP
+\fIallegro-makedoc\fP is the Allegro library's documentation generator. It
+simplifies producing the documentation in various formats (ASCII, HTML,
+TexInfo, and RTF). It converts from a weird layout that is basically a
+kind of stripped down HTML with a few extra markers (the _tx files), and
+automates a few things like constructing indexes and splitting HTML files
+into multiple parts.
+
+Be warned that \fIallegro-makedoc\fP is not pretty, elegant, or well written,
+and is liable to get upset if it doesn't like the input data.
+.
+.SH EXAMPLE
+.l
+\fIallegro-makedoc\fP -html output.html -ascii output.txt input._tx
+.PP
+Reads input._tx and output an HTML documentation to output.html and an ASCII
+documentation to output.txt.
+.
+.SH OPTIONS
+.l
+\fIallegro-makedoc\fP accepts the following options:
+.TP 8
+.B  \-part
+Partial output.
+.TP 8
+.B  \-warn
+Output warning messages.
+.TP 8
+.B  \-html OUTFILE, \-htm OUTFILE
+Output HTML documentation to OUTFILE. If no file extension is provided, .html
+or .htm will be used, depending on the flag used.
+.TP 8
+.B  \-texi OUTFILE, \-txi OUTFILE
+Output TexInfo documentation to OUTFILE. If no file extension is provided,
+ .texi or .txi will be used, depending on the flag used.
+.TP 8
+.B  \-rtf OUTFILE
+Output RTF documentation to OUTFILE.
+.TP 8
+.B  \-man OUTFILE
+Output documentation in manual page format to OUTFILE.
+.SH SEE ALSO
+.BR allegro-dev-tools (1)
+.br
+The
+.BR allegro
+info entry
+.SH COPYRIGHT
+This manual page was written by Sam Hocevar <sam@zoy.org> for the Debian
+system (but may be used by others).

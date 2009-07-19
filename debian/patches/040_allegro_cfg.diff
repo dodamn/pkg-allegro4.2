@@ -1,0 +1,48 @@
+Index: allegro4.2-4.2.2/allegro.cfg
+===================================================================
+--- allegro4.2-4.2.2.orig/allegro.cfg	2006-05-21 10:01:46.000000000 +0000
++++ allegro4.2-4.2.2/allegro.cfg	2007-09-30 18:51:08.000000000 +0000
+@@ -1,7 +1,19 @@
+ #
++# Hints for Debian - READ THEM FIRST!
++# 
++# Allegro is built with many drivers, some of them are not really stable
++# and may cause trouble or crash your X-Server or destroy your console.
++# For this reason, you should only choose XWIN as your "system"
++# environment (see below) - in this case you can play the games only in
++# the X11-environment, but you get more stability. Running on console
++# will fail. If you are developer or are sure that the "Linux console"
++# mode won't crash your system, you may try it on your own risk and
++# report bugs to the upstream (look for mailing lists on Allegro's main
++# homepage).
++
+ #  Configuration file for the Allegro library.
+ #
+-#  If you leave a parameter blank, Allegro will autodetect (ie. guess :-)
++#  IF YOU LEAVE A PARAMETER BLANK, ALLEGRO WILL AUTODETECT (IE. GUESS :-)
+ #
+ #  This file should be kept either in the same directory as your program,
+ #  or in a location pointed to by the "ALLEGRO" environment variable.
+@@ -18,7 +30,7 @@
+ #  XWIN     - XWindows
+ #  LNXC     - Linux console
+ 
+-system = 
++system = XWIN
+ 
+ 
+ 
+@@ -242,9 +254,11 @@
+ #  GPMD     - GPM repeater data (Mouse Systems protocol)
+ #  EV       - Event interfaces (EVDEV) - set mouse_device = /dev/input/eventN
+ 
+-mouse = 
+-
++# Change this and following three settings if Allegro has problems
++# autodetecting your mouse on console, i.e. if you use GPM repeater with
++# special protocols or similar hocus pocus
+ 
++mouse = 
+ 
+ # number of buttons (specifying this overrides autodetection)
+ num_buttons = 

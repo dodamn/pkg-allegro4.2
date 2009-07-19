@@ -1,0 +1,11 @@
+005_no_strip_no_export_dynamic.diff 
+005_no_unsharable.diff 
+010_autoreconf.diff 
+020_asm_fixes.diff -p1
+020_data_path.diff 
+020_debug.diff 
+020_non-executable-stack.diff 
+030_man_suffix.diff 
+040_allegro_cfg.diff 
+050_manpage_syntax.diff
+060_fix_fnstsw.diff

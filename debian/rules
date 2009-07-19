@@ -1,0 +1,198 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+ver=4.2
+intver=4.2
+fullver=4.2.2
+
+# SVGAlib is only for x86
+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
+ARCH_CONFIG_FLAGS = 
+ARCH_PACKAGES = liballegro$(ver)-plugin-svgalib
+else
+ARCH_CONFIG_FLAGS = --enable-svgalib=no
+ARCH_PACKAGES = 
+endif
+
+include makefile.ver
+
+configure: configure-stamp
+
+configure-stamp:
+	dh_testdir
+	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
+	# Touch stuff
+	touch configure.in \
+	&& touch aclocal.m4 \
+	&& touch acconfig.h \
+	&& touch stamp-h.in \
+	&& touch configure \
+	&& touch include/allegro/platform/alunixac.hin
+
+	touch configure
+	./configure --prefix=/usr \
+	            --mandir=/usr/share/man --infodir=/usr/share/info \
+	            --enable-shared --enable-static \
+	            --enable-pentiumopts=no --enable-asm=yes \
+	            --enable-artsdigi=no \
+	            $(ARCH_CONFIG_FLAGS)
+	touch configure-stamp
+
+build: configure-stamp build-stamp
+
+build-stamp:
+	dh_testdir
+	$(MAKE) depend
+	$(MAKE)
+	touch build-stamp
+
+install: configure-stamp build-stamp install-stamp
+
+install-stamp:
+	dh_testdir
+	dh_testroot
+
+	dh_clean -k
+
+	# Create directories
+	dh_installdirs -pliballegro$(ver) \
+	               usr/share/timidity/patches usr/lib/allegro
+	dh_installdirs -pliballegro$(ver)-plugin-jack \
+	               usr/lib/allegro/$(fullver) usr/share/doc
+	dh_installdirs -pliballegro$(ver)-plugin-esd \
+	               usr/lib/allegro/$(fullver) usr/share/doc
+	dh_installdirs -pliballegro$(ver)-plugin-svgalib \
+	               usr/lib/allegro/$(fullver) usr/share/doc
+	dh_installdirs -pliballegro-doc \
+	               usr/share/doc/liballegro-doc/html usr/share/man/man3
+	dh_installdirs -pliballegro$(ver)-dev usr/share/man/man1
+	dh_installdirs -pallegro-demo usr/share/man/man6 \
+	               usr/games usr/share/games/allegro-demo
+	dh_installdirs -pallegro-examples \
+	               usr/share/games/allegro-examples usr/bin \
+	               usr/lib/games/allegro-examples usr/share/man/man1
+
+	# Install everything binary
+	$(MAKE) full-install DESTDIR=`pwd`/debian/liballegro$(ver)-dev
+
+	# .so.x.y is the real lib and .so is the symlink goddamit!
+	rm -f `pwd`/debian/liballegro$(ver)-dev/usr/lib/liballeg.so.$(intver)
+	mv `pwd`/debian/liballegro$(ver)-dev/usr/lib/liballeg-$(fullver).so \
+	   `pwd`/debian/liballegro$(ver)/usr/lib/liballeg.so.$(intver)
+	ln -s liballeg.so.$(intver) \
+	      `pwd`/debian/liballegro$(ver)-dev/usr/lib/liballeg-$(fullver).so
+
+	# Move plugins to the runtime library package
+	mv `pwd`/debian/liballegro$(ver)-dev/usr/lib/allegro/$(fullver) \
+	   `pwd`/debian/liballegro$(ver)/usr/lib/allegro/
+	rm -Rf `pwd`/debian/liballegro$(ver)-dev/usr/lib/allegro
+
+	touch install-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -rf build-*stamp configure-*stamp install-*stamp *.cache
+	rm -rf lib/unix/st* tmp
+	# If missing makefile, configure first
+	-test -f makefile || (touch configure && ./configure)
+	$(MAKE) veryclean
+	QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2
+	rm -rf allegro.ps allegro.ps.gz allegro.dvi THANKS makefile \
+	       obj/unix/asmdef.inc AUTHORS CHANGES _depend tmp \
+	       config.c.rtl config.cache config.sub
+	rm -f docs/man/*.3alleg
+	dh_clean
+
+# Build architecture-independent files here.
+binary-indep: liballegro-doc
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+# Build architecture-dependent files here.
+binary-arch: liballegro$(ver) allegro-demo allegro-examples liballegro$(ver)-dev liballegro$(ver)-plugin-jack liballegro$(ver)-plugin-esd $(ARCH_PACKAGES)
+	dh_strip -s
+	dh_compress -s
+	dh_fixperms -s
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
+
+liballegro-doc: install
+	$(MAKE) docs
+	perl -pe "s/START-INFO-DIR-ENTRY/INFO-DIR-SECTION Development\nSTART-INFO-DIR-ENTRY/" -i docs/info/allegro.info
+	cp -a docs/html/*.html `pwd`/debian/liballegro-doc/usr/share/doc/liballegro-doc/html 
+	$(MAKE) install-gzipped-man DESTDIR=`pwd`/debian/liballegro-doc
+	dh_installdocs -pliballegro-doc readme.* THANKS todo.txt AUTHORS *.txt readme.*
+	rm -rf tmp; mkdir tmp
+	cp examples/*.c examples/*.h examples/*.dat examples/*.pcx examples/*.txt demo/demo.c demo/demo.h tests/*.c setup/*.c setup/*.h setup/*txt tmp
+	cd tmp && tar zcvf ../source.tgz . && mv ../source.tgz .
+	chmod +x debian/compile_examples.sh
+	dh_installexamples -pliballegro-doc debian/compile_examples.sh tmp/source.tgz
+	dh_installinfo -pliballegro-doc docs/info/allegro.info
+	dh_installchangelogs -pliballegro-doc CHANGES
+
+liballegro$(ver): install
+	cp `pwd`/debian/default.cfg `pwd`/debian/liballegro$(ver)/usr/share/timidity/patches/default.cfg.liballegro$(ver)
+	dh_installdocs -pliballegro$(ver) debian/README.Debian
+	dh_installexamples -pliballegro$(ver) `pwd`/allegro.cfg
+	dh_installchangelogs CHANGES -pliballegro$(ver)
+	dh_makeshlibs -pliballegro$(ver) -V "liballegro$(ver) (>= 2:4.2.2)"
+
+liballegro$(ver)-dev: install
+	cp `pwd`/docs/makedoc `pwd`/debian/liballegro$(ver)-dev/usr/bin/allegro-makedoc
+	chmod 755 `pwd`/debian/liballegro$(ver)-dev/usr/bin/allegro-makedoc
+	cp -a `pwd`/debian/allegro-dev-tools.1 `pwd`/debian/liballegro$(ver)-dev/usr/share/man/man1/
+	(cd `pwd`/debian/liballegro$(ver)-dev/usr/share/man/man1/; for x in colormap.1 dat.1 dat2c.1 dat2s.1 exedat.1 grabber.1 pack.1 pat2dat.1 rgbmap.1 textconv.1; do ln -sf allegro-dev-tools.1 $$x; done)
+	dh_installman -pliballegro$(ver)-dev `pwd`/debian/allegro-config.1 `pwd`/debian/allegro-makedoc.1
+	dh_installdocs -pliballegro$(ver)-dev debian/README.Debian
+	dh_installchangelogs CHANGES -pliballegro$(ver)-dev
+
+liballegro$(ver)-plugin-jack: install
+	mv `pwd`/debian/liballegro$(ver)/usr/lib/allegro/$(fullver)/alleg-jackdigi.so `pwd`/debian/liballegro$(ver)-plugin-jack/usr/lib/allegro/$(fullver)/
+	ln -sf liballegro$(ver) `pwd`/debian/liballegro$(ver)-plugin-jack/usr/share/doc/liballegro$(ver)-plugin-jack
+
+liballegro$(ver)-plugin-esd: install
+	mv `pwd`/debian/liballegro$(ver)/usr/lib/allegro/$(fullver)/alleg-esddigi.so `pwd`/debian/liballegro$(ver)-plugin-esd/usr/lib/allegro/$(fullver)/
+	ln -sf liballegro$(ver) `pwd`/debian/liballegro$(ver)-plugin-esd/usr/share/doc/liballegro$(ver)-plugin-esd
+
+liballegro$(ver)-plugin-svgalib: install
+	mv `pwd`/debian/liballegro$(ver)/usr/lib/allegro/$(fullver)/alleg-svgalib.so `pwd`/debian/liballegro$(ver)-plugin-svgalib/usr/lib/allegro/$(fullver)/
+	ln -sf liballegro$(ver) `pwd`/debian/liballegro$(ver)-plugin-svgalib/usr/share/doc/liballegro$(ver)-plugin-svgalib
+
+allegro-demo: install
+	cp `pwd`/demo/demo `pwd`/debian/allegro-demo/usr/games/all-demo
+	chmod 755 `pwd`/debian/allegro-demo/usr/games/all-demo
+	cp `pwd`/readme.txt `pwd`/debian/allegro-demo/usr/share/games/allegro-demo
+	cp `pwd`/docs/src/thanks._tx `pwd`/debian/allegro-demo/usr/share/games/allegro-demo/
+	dh_installdocs -pallegro-demo debian/README.Debian
+	dh_installmenu -pallegro-demo
+	dh_installman -pallegro-demo debian/*.6
+	dh_installchangelogs CHANGES -pallegro-demo
+
+allegro-examples: install
+	cd `pwd`/examples ; cp `cut -f1 -d" " < ../debian/tests.dsc | grep ^ex` ../debian/allegro-examples/usr/lib/games/allegro-examples ; cp *.pcx *.dat ../debian/allegro-examples/usr/share/games/allegro-examples
+	cd `pwd`/tests ; cp `cut -f1 -d" " < ../debian/tests.dsc | grep -v ^ex` ../debian/allegro-examples/usr/lib/games/allegro-examples
+	cd `pwd` ; perl debian/create_allegro-examples.pl > debian/allegro-examples/usr/bin/allegro-examples
+	chmod 755 debian/allegro-examples/usr/bin/allegro-examples
+	ln -sf ../lib/games/allegro-examples/playfli debian/allegro-examples/usr/bin/playfli-from-Allegro
+	ln -sf ../lib/games/allegro-examples/miditest debian/allegro-examples/usr/bin/midikeyboard-from-Allegro
+	ln -sf ../lib/games/allegro-examples/mathtest debian/allegro-examples/usr/bin/calculator-from-Allegro
+	cp -a `pwd`/debian/allegro-examples.1 `pwd`/debian/allegro-examples/usr/share/man/man1/
+	(cd `pwd`/debian/allegro-examples/usr/share/man/man1/; ln -sf allegro-examples.1 playfli-from-Allegro.1; ln -sf allegro-examples.1 midikeyboard-from-Allegro.1; ln -sf allegro-examples.1 calculator-from-Allegro.1)
+	dh_installdocs -pallegro-examples debian/allegro-examples.README
+	dh_installmenu -pallegro-examples
+	dh_installchangelogs -pallegro-examples
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install configure

@@ -1,0 +1,125 @@
+Source: allegro4.2
+Section: devel
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian allegro packages maintainers <pkg-allegro-maintainers@lists.alioth.debian.org>
+Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>
+Build-Depends: debhelper (>= 4.0), quilt, texinfo, libesd0-dev, libxext-dev, libx11-dev, libxpm-dev, libxt-dev, libxcursor-dev, svgalibg1-dev [i386], libasound2-dev (>= 0.9) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libjack0.100.0-dev, libxxf86dga-dev, libxxf86vm-dev
+Standards-Version: 3.7.3
+
+Package: liballegro4.2
+Section: libs
+Architecture: any
+Depends: ${shlibs:Depends}
+Recommends: liballegro4.2-plugin-jack
+Suggests: timidity-patches, liballegro4.2-plugin-esd
+Priority: optional
+Description: portable library for cross-platform game and multimedia development
+ Allegro is a cross-platform library intended for use in computer games
+ and other types of multimedia programming. It is used by many DOS games
+ and can be used to port them easily to Linux. Allegro supports many
+ kinds of input and output interfaces, e.g. X11 (Xlib or DGA),
+ framebuffer, SVGAlib.
+ .
+ NOTE: you should install XFree86 to use the display output plugins.
+ Alternatively, you can use the framebuffer output, or install the
+ liballegro-plugin-svgalib on i386.
+
+Package: liballegro4.2-dev
+Section: libdevel
+Architecture: any
+Depends: ${shlibs:Depends}, liballegro4.2 (= ${binary:Version}), libxext-dev, libx11-dev, libxpm-dev, libxxf86vm-dev, libxcursor-dev
+Provides: liballegro3.9.37-dev, liballegro-dev-common, liballegro-dev
+Conflicts: liballegro-dev-common, liballegro4a (<< 2:4.0.3-5), liballegro-dev (<< 2:4.2.0-0rc2-1)
+Replaces: liballegro-dev-common, liballegro4a (<< 2:4.0.3-5), liballegro-dev (<< 2:4.2.0-0rc2-1)
+Priority: optional
+Description: development files for the Allegro library
+ This package contains the static libraries for the Allegro library.
+ .
+ Allegro is a cross-platform library intended for use in computer
+ games and other types of multimedia programming. It is used by many
+ DOS games and can be used to port them easily to Linux.
+
+Package: liballegro4.2-plugin-jack
+Architecture: any
+Section: libs
+Priority: optional
+Depends: ${shlibs:Depends}, liballegro4.2 (= ${binary:Version})
+Description: JACK audio plugin for the Allegro library
+ This plugin adds support for the JACK low-latency sound server to the
+ Allegro library. Programs using Allegro will automatically use this
+ plugin if JACK is running.
+ .
+ Allegro is a cross-platform library intended for use in computer
+ games and other types of multimedia programming. It is used by many
+ DOS games and can be used to port them easily to Linux.
+
+Package: liballegro4.2-plugin-esd
+Architecture: any
+Section: libs
+Priority: optional
+Depends: ${shlibs:Depends}, liballegro4.2 (= ${binary:Version})
+Description: esd audio plugin for the Allegro library
+ This plugin adds support for the Enlightened Sound Daemon to the Allegro
+ library. Programs using Allegro will automatically use this plugin if esd
+ is running.
+ .
+ Allegro is a cross-platform library intended for use in computer
+ games and other types of multimedia programming. It is used by many
+ DOS games and can be used to port them easily to Linux.
+
+Package: liballegro4.2-plugin-svgalib
+Architecture: i386
+Section: libs
+Priority: optional
+Depends: ${shlibs:Depends}, liballegro4.2 (= ${binary:Version})
+Description: SVGAlib video plugin for the Allegro library
+ This plugin adds support for the SVGAlib graphics library to the Allegro
+ library. Programs using the SVGAlib library need to run with root permissions,
+ so you probably do not want to use this plugin unless you have very good
+ reasons to do so.
+ .
+ Allegro is a cross-platform library intended for use in computer
+ games and other types of multimedia programming. It is used by many
+ DOS games and can be used to port them easily to Linux.
+
+Package: allegro-demo
+Architecture: any
+Section: games
+Priority: optional
+Depends: ${shlibs:Depends}, allegro-demo-data
+Description: cool game, demonstrating power of the Allegro library
+ This game is distributed with the Allegro library and shows a new
+ Allegro programmer the power of this lib. But it is more than an
+ usual feature demo, it is fully playable and may make some fun...
+
+Package: allegro-examples
+Architecture: any
+Section: utils
+Depends: dialog, ${shlibs:Depends}
+Suggests: liballegro-doc
+Priority: optional
+Description: example programs and demo tools for the Allegro library
+ This package contain some example programs that are distributed with
+ the Allegro library and small tools that can be used on console or in X11:
+ .
+   - FLI player
+   - WAV/VOC player
+   - simple graphical calculator
+   - graphical midi "keyboard"
+ .
+ The programs are accessible via the "allegro-examples" program.
+ 
+Package: liballegro-doc
+Section: doc
+Architecture: all
+Priority: optional
+Suggests: allegro-examples
+Description: documentation for the Allegro library
+ This package contains the Allegro documentation in various formats,
+ FAQs and other documentation about the Allegro library, source of the
+ demo game and example programs.
+ .
+ Allegro is a cross-platform library intended for use in computer
+ games and other types of multimedia programming. It is used by many
+ DOS games and can be used to port them easily to Linux.

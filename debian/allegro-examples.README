@@ -1,0 +1,9 @@
+Allegro examples
+================
+
+I packaged some example programs, tests and utils from the Allegro
+source package into this Debian package. You can invoke the programs
+using the selection tool "allegro-examples". The source is contained in the
+liballegro-doc package.
+
+ -- Eduard Bloch <blade@debian.org> -- Fri, 18 Jan 2002 14:21:49 +0100

@@ -1,0 +1,2 @@
+?package(allegro-examples):needs="X11" section="Applications/Programming" \
+  title="Allegro example programs" command="/usr/bin/x-terminal-emulator -e /usr/bin/allegro-examples"

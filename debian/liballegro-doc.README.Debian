@@ -1,0 +1,8 @@
+Allegro documentation in Debian
+===============================
+
+Documentation in Text, HTML and INFO formats only is provided by this package.
+You can generate Postscript or PDF easily from the source, or you can go to
+http://people.debian.org/~blade/allegro where I will upload the files to.
+
+ Eduard Bloch <blade@debian.org> -- Sat,  8 Dec 2001 13:42:39 +0100
