@@ -1,3 +1,14 @@
+allegro4.2 (2:4.2.2-2.1ubuntu1+ppa1~karmic1) karmic; urgency=low
+
+  * Update package maintainer information
+  * Add a patch 070_fix_alsa.diff to fix ALSA driver
+    - This patch makes the ALSA driver working for hardware which
+      does not support unsigned samples. Also, this fixes
+      pulseaudio bug http://www.pulseaudio.org/ticket/133. This
+      patch is made from rev.9937 at sourceforge svn repository.
+
+ -- dodamn <dodamn@gmail.com>  Mon, 03 May 2010 20:08:28 +0900
+
 allegro4.2 (2:4.2.2-2.1ubuntu1) karmic; urgency=low
 
   * Merge from debian unstable, remaining changes: LP: #401293
