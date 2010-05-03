@@ -9,3 +9,5 @@
 040_allegro_cfg.diff 
 050_manpage_syntax.diff
 060_fix_fnstsw.diff
+070_fix_alsa.diff
+
