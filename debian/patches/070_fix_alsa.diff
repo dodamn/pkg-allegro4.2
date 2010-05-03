@@ -1,5 +1,5 @@
 --- allegro/branches/4.2/src/unix/alsa9.c	2006/03/18 15:05:34	5756
-+++ allegro/branches/4.2/src/unix/alsa9.c	2008/01/27 16:06:10	9937
++++ allegro4.2/src/unix/alsa9.c	2008/01/27 16:06:10	9937
 @@ -353,26 +353,47 @@
     alsa_bits = (_sound_bits == 8) ? 8 : 16;
     alsa_stereo = (_sound_stereo) ? 1 : 0;
