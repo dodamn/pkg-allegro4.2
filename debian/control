@@ -1,9 +1,9 @@
 Source: allegro4.2
 Section: devel
 Priority: optional
-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Maintainer: dodamn <dodamn@gmail.com>
+XSBC-Original-Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 XSBC-Original-Maintainer: Debian allegro packages maintainers <pkg-allegro-maintainers@lists.alioth.debian.org>
-Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>
 Build-Depends: debhelper (>= 4.0), quilt, texinfo, libesd0-dev, libxext-dev, libx11-dev, libxpm-dev, libxt-dev, libxcursor-dev, svgalibg1-dev [i386], libasound2-dev (>= 0.9) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386], libjack0.100.0-dev, libxxf86dga-dev, libxxf86vm-dev
 Standards-Version: 3.7.3
 
